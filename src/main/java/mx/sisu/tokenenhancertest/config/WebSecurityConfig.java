@@ -22,12 +22,10 @@ public class WebSecurityConfig {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			System.out.println("AdminSecurityConfig LOADED!!!");
-			http.csrf().disable();
-			http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/admin_logout"))
-					.invalidateHttpSession(true).logoutSuccessUrl("/admin/login.html");
 
-		http.requestMatchers().antMatchers("/admin/**")
+		http.requestMatchers().antMatchers("/admin/**", "/admin_login", "/admin_logout")
 			.and()
+				.csrf().disable()
 				.authorizeRequests()
 				.antMatchers("/admin/protected.html").hasRole("ADMIN")
 				.antMatchers("/admin/login.html").permitAll()
@@ -35,6 +33,9 @@ public class WebSecurityConfig {
 				.formLogin().loginPage("/admin/login.html")
 				.loginProcessingUrl("/admin_login")
 				.defaultSuccessUrl("/admin/protected.html")
+			.and()
+				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/admin_logout"))
+				.invalidateHttpSession(true).logoutSuccessUrl("/admin/login.html")				
 				;
 
 		}
